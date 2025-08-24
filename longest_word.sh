@@ -13,3 +13,4 @@ file=$1
 longest_word=$(tr -s '[:space:]' '\n' < "$file" | sed 's/[^a-zA-Z0-9]//g' | awk '{ if (length > max) { max=length; word=$0 } } END { print word }')
 
 echo "The longest word in $file is: $longest_word"
+ 
