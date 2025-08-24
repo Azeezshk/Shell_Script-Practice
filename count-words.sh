@@ -1,23 +1,18 @@
 #!/bin/bash
 
-if [ $# -lt 1 ]; then
+# Check if file is given
+if [ -z "$1" ]; then
     echo "Usage: $0 filename"
     exit 1
 fi
 
-FILE=$1
+file="$1"
 
-if [ ! -f "$FILE" ]; then
-    echo "Error: File '$FILE' not found!"
-    exit 1
-fi
-
-echo "Top 5 most frequent words in $FILE:"
-cat "$FILE" \
-  | tr '[:upper:]' '[:lower:]' \
-  | tr -s '[:space:]' '\n' \
-  | tr -d '[:punct:]' \
-  | sort \
-  | uniq -c \
-  | sort -nr \
-  | head -5
+# Count words (case-insensitive, remove punctuation)
+echo "Top 5 most frequent words in $file (with ties):"
+tr '[:upper:]' '[:lower:]' < "$file" | \
+tr -d '[:punct:]' | \
+tr '[:space:]' '\n' | \
+grep -v '^$' | \
+sort | uniq -c | sort -nr | \
+awk 'NR<=5 {print; prev=$1; next} $1==prev {print}'
